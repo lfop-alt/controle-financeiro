@@ -10,8 +10,8 @@ Map<int, String> scripts = {
           valorBruto REAL,
           rentabilidadeNoMes REAL,
           dy REAL,
-          dyOnCost REAL
-          anoAtual INTERGER
+          dyOnCost REAL,
+          ano INTERGER
           );'''
 };
 

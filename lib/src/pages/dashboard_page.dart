@@ -17,7 +17,7 @@ class _DashboardPageState extends State<DashboardPage> {
   DividendYieldRepository dividendYieldRepository = DividendYieldRepository();
 
   var _dividends = <DividendYield>[];
-  var anoAtual = true;
+  bool ano = true;
 
   @override
   void initState() {
@@ -26,8 +26,30 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void initDividend() async {
-    _dividends = await dividendYieldRepository.listarDy(anoAtual);
+    _dividends = await dividendYieldRepository.listarDy(ano);
     setState(() {});
+  }
+
+  double getAcumuladoDy() {
+    double dyAcumulado = 0;
+    if (ano) {
+      for (var dy in _dividends) {
+        dyAcumulado = dyAcumulado + dy.dy;
+      }
+    }
+
+    return dyAcumulado;
+  }
+
+  double getAcumuladoDyOnCost() {
+    double dyAcumulado = 0;
+    if (ano) {
+      for (var dy in _dividends) {
+        dyAcumulado = dyAcumulado + dy.dyOnCost;
+      }
+    }
+
+    return dyAcumulado;
   }
 
   @override
@@ -37,24 +59,7 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
         title: const Text("Pagina Inicial"),
         actions: [
-          if (_dividends.length >= 5)
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CalcularDY(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.add))
-        ],
-      ),
-      floatingActionButton: _dividends.length < 5
-          ? FloatingActionButton.extended(
-              backgroundColor: Colors.grey[850],
-              label: const Text("Adicionar DY"),
-              icon: const Icon(Icons.add),
+          IconButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -63,8 +68,9 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 );
               },
-            )
-          : const Text(""),
+              icon: const Icon(Icons.add))
+        ],
+      ),
       body: SafeArea(
         child: ListView(
           children: [
@@ -72,15 +78,26 @@ class _DashboardPageState extends State<DashboardPage> {
               color: const Color.fromARGB(255, 102, 102, 102),
               width: double.infinity,
               height: 40,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Ano Atual",
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white)),
+                    const Text(
+                      "Ano Atual",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white),
+                    ),
+                    Switch(
+                      value: ano,
+                      onChanged: (value) {
+                        ano = value;
+                        initDividend();
+                      },
+                    )
                   ],
                 ),
               ),
@@ -88,7 +105,7 @@ class _DashboardPageState extends State<DashboardPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: SizedBox(
-                height: 600,
+                height: 550,
                 child: ListView.builder(
                     itemCount: _dividends.length,
                     itemBuilder: (context, index) {
@@ -109,9 +126,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               Column(
                                 children: [
                                   Container(
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.elliptical(5, 5),
+                                          topRight: Radius.elliptical(5, 5)),
+                                      color: Color.fromARGB(255, 102, 102, 102),
+                                    ),
                                     height: 40,
-                                    color: const Color.fromARGB(
-                                        255, 102, 102, 102),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8),
@@ -127,7 +148,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 color: Colors.white),
                                           ),
                                           Text(
-                                            dy.mes,
+                                            "${dy.mes}/${dy.ano}",
                                             style: const TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.w500,
@@ -157,7 +178,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           color: Colors.white),
                                     ),
                                     Text(
-                                      dy.dy.toString(),
+                                      "${dy.dy.toString()}%",
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
@@ -185,7 +206,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           color: Colors.white),
                                     ),
                                     Text(
-                                      dy.dyOnCost.toString(),
+                                      "${dy.dyOnCost.toString()}%",
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
@@ -213,7 +234,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           color: Colors.white),
                                     ),
                                     Text(
-                                      dy.valorAplicado.toString(),
+                                      "R\$ ${dy.valorAplicado.toString()}",
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
@@ -241,7 +262,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           color: Colors.white),
                                     ),
                                     Text(
-                                      dy.valorBruto.toString(),
+                                      "R\$ ${dy.valorBruto.toString()}",
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
@@ -269,7 +290,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           color: Colors.white),
                                     ),
                                     Text(
-                                      dy.rentabilidadeNoMes.toString(),
+                                      "R\$ ${dy.rentabilidadeNoMes.toString()}",
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
@@ -286,30 +307,59 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.all(4),
-              child: const Card(
-                color: Colors.black45,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Total Acumado no Ano",
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        "12,91%",
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )
-                    ],
-                  ),
+              height: 110,
+              color: const Color.fromARGB(255, 102, 102, 102),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 22),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "DY acumado no Ano",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          "${getAcumuladoDy().toString()}%",
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    const Divider(),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "DY On Cost acumulado no Ano",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          "${getAcumuladoDyOnCost().toStringAsPrecision(2)}%",
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
             )

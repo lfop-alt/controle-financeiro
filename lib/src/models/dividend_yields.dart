@@ -6,10 +6,10 @@ class DividendYield {
   double _rentabilidadeNoMes = 0;
   double _dy = 0;
   double _dyOnCost = 0;
-  int _anoAtual = 1;
+  int _ano = 0;
 
   DividendYield(this._id, this._mes, this._valorAplicado, this._valorBruto,
-      this._rentabilidadeNoMes, this._dy, this._dyOnCost);
+      this._rentabilidadeNoMes, this._dy, this._dyOnCost, this._ano);
 
   int get id => _id;
 
@@ -40,7 +40,7 @@ class DividendYield {
 
   set dyOnCost(double dyOnCost) => _dyOnCost = dyOnCost;
 
-  int get anoAtual => _anoAtual;
+  int get ano => _ano;
 
-  set anoAtual(int anoAtual) => _anoAtual = anoAtual;
+  set ano(int ano) => _ano = ano;
 }

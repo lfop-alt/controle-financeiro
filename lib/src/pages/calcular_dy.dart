@@ -19,6 +19,17 @@ List<String> meses = <String>[
   "Dezembro",
 ];
 
+List<String> anos = <String>[
+  "2020",
+  "2021",
+  "2022",
+  "2023",
+  "2024",
+  "2025",
+  "2026",
+  "2027"
+];
+
 class CalcularDY extends StatefulWidget {
   const CalcularDY({super.key});
 
@@ -29,10 +40,12 @@ class CalcularDY extends StatefulWidget {
 class _CalcularDYState extends State<CalcularDY> {
   DividendYieldRepository dividendYieldRepository = DividendYieldRepository();
   var mes;
-  TextEditingController mesController = TextEditingController();
+  int ano = DateTime.now().year;
+
   TextEditingController valorAplicadoController = TextEditingController();
   TextEditingController saldoBrutoController = TextEditingController();
   TextEditingController rendimentoDoMesController = TextEditingController();
+  var anoDropdown;
 
   @override
   Widget build(BuildContext context) {
@@ -53,68 +66,114 @@ class _CalcularDYState extends State<CalcularDY> {
             const SizedBox(
               height: 40,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownButton(
-                hint: const Text("Selecione o mês"),
-                isExpanded: false,
-                value: mes,
-                items: [
-                  DropdownMenuItem(
-                    value: 0,
-                    child: Text(meses[0]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                    menuMaxHeight: 500,
+                    hint: const Text("Selecione o mês"),
+                    isExpanded: false,
+                    value: mes,
+                    items: [
+                      DropdownMenuItem(
+                        value: 0,
+                        child: Text(meses[0]),
+                      ),
+                      DropdownMenuItem(
+                        value: 1,
+                        child: Text(meses[1]),
+                      ),
+                      DropdownMenuItem(
+                        value: 2,
+                        child: Text(meses[2]),
+                      ),
+                      DropdownMenuItem(
+                        value: 3,
+                        child: Text(meses[3]),
+                      ),
+                      DropdownMenuItem(
+                        value: 4,
+                        child: Text(meses[4]),
+                      ),
+                      DropdownMenuItem(
+                        value: 5,
+                        child: Text(meses[5]),
+                      ),
+                      DropdownMenuItem(
+                        value: 6,
+                        child: Text(meses[6]),
+                      ),
+                      DropdownMenuItem(
+                        value: 7,
+                        child: Text(meses[7]),
+                      ),
+                      DropdownMenuItem(
+                        value: 8,
+                        child: Text(meses[8]),
+                      ),
+                      DropdownMenuItem(
+                        value: 9,
+                        child: Text(meses[9]),
+                      ),
+                      DropdownMenuItem(
+                        value: 10,
+                        child: Text(meses[10]),
+                      ),
+                      DropdownMenuItem(
+                        value: 11,
+                        child: Text(meses[11]),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        mes = value ?? meses[0];
+                      });
+                    },
                   ),
-                  DropdownMenuItem(
-                    value: 1,
-                    child: Text(meses[1]),
-                  ),
-                  DropdownMenuItem(
-                    value: 2,
-                    child: Text(meses[2]),
-                  ),
-                  DropdownMenuItem(
-                    value: 3,
-                    child: Text(meses[3]),
-                  ),
-                  DropdownMenuItem(
-                    value: 4,
-                    child: Text(meses[4]),
-                  ),
-                  DropdownMenuItem(
-                    value: 5,
-                    child: Text(meses[5]),
-                  ),
-                  DropdownMenuItem(
-                    value: 6,
-                    child: Text(meses[6]),
-                  ),
-                  DropdownMenuItem(
-                    value: 7,
-                    child: Text(meses[7]),
-                  ),
-                  DropdownMenuItem(
-                    value: 8,
-                    child: Text(meses[8]),
-                  ),
-                  DropdownMenuItem(
-                    value: 9,
-                    child: Text(meses[9]),
-                  ),
-                  DropdownMenuItem(
-                    value: 10,
-                    child: Text(meses[10]),
-                  ),
-                  DropdownMenuItem(
-                    value: 11,
-                    child: Text(meses[11]),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    mes = value!;
-                  });
-                },
-              ),
+                ),
+                DropdownButton(
+                  value: anoDropdown,
+                  hint: const Text("Selecione o Ano"),
+                  items: [
+                    DropdownMenuItem(value: anos[0], child: Text(anos[0])),
+                    DropdownMenuItem(
+                      value: anos[1],
+                      child: Text(anos[1]),
+                    ),
+                    DropdownMenuItem(
+                      value: anos[2],
+                      child: Text(anos[2]),
+                    ),
+                    DropdownMenuItem(
+                      value: anos[3],
+                      child: Text(anos[3]),
+                    ),
+                    DropdownMenuItem(
+                      value: anos[4],
+                      child: Text(anos[4]),
+                    ),
+                    DropdownMenuItem(
+                      value: anos[5],
+                      child: Text(anos[5]),
+                    ),
+                    DropdownMenuItem(
+                      value: anos[6],
+                      child: Text(anos[6]),
+                    ),
+                    DropdownMenuItem(
+                      value: anos[7],
+                      child: Text(anos[7]),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      anoDropdown = value ?? anos[0];
+                    });
+                  },
+                )
+              ],
             ),
             const SizedBox(
               height: 35,
@@ -185,7 +244,8 @@ class _CalcularDYState extends State<CalcularDY> {
                         double.parse(saldoBrutoController.text),
                         double.parse(rendimentoDoMesController.text),
                         dy,
-                        dyOnCost));
+                        dyOnCost,
+                        int.parse(anoDropdown)));
 
                     Navigator.push(
                         context,
